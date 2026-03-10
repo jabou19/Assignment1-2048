@@ -11,27 +11,27 @@ Margine = 20
 Screen_size = Size * Tile_size + (Size + 1) * Gap_size + 2 * Margine
 Screen_width = Screen_size
 Screen_height = Screen_size
-Background_color = (255, 251, 240)
-EMPTY_TILE_COLOR = (205, 192, 180)
+Background_color = "#e5e5e0"
+EMPTY_TILE_COLOR = "#93908c00" # it is not used.
 Tile_colors = {
-    2: "#eee4da",
-    4: "#ede0c8",
-    8: "#f2b179",
-    16: "#f59563",
-    32: "#f57c5f",
-    64: "#f55e3a",
-    128: "#edc280",
-    256: "#edc174",
-    512: "#edc069",
-    1024: "#edbe5d",
-    2048: "#edbc51"
+    2: "#f8f8f5c1",
+    4: "#f0be95",
+    8: "#f3a35e",
+    16: "#f28e58",
+    32: "#e77356",
+    64: "#f25730",
+    128: "#f0c88b",
+    256: "#f1be67",
+    512: "#f1c15f",
+    1024: "#f1b949",
+    2048: "#eeae24"
 }
 FONT_COLOR = (0, 0, 0)
 FONT = pygame.font.SysFont('arial', 40)
 
 # Functions
 def draw_tile(screen, value, x, y):
-    color = Tile_colors.get(value, (60, 58, 50))
+    color = EMPTY_TILE_COLOR if value == 0 else Tile_colors.get(value, (60, 58, 50))
     rect = pygame.Rect(x, y, Tile_size, Tile_size)
     pygame.draw.rect(screen, color, rect)
     if value != 0:
