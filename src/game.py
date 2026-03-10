@@ -12,7 +12,7 @@ Screen_size = Size * Tile_size + (Size + 1) * Gap_size + 2 * Margine
 Screen_width = Screen_size
 Screen_height = Screen_size
 Background_color = "#e5e5e0"
-EMPTY_TILE_COLOR = "#93908c00" 
+EMPTY_TILE_COLOR = "#93908c00"
 Tile_colors = {
     2: "#f8f8f5c1",
     4: "#f0be95",
@@ -24,10 +24,11 @@ Tile_colors = {
     256: "#f1be67",
     512: "#f1c15f",
     1024: "#f1b949",
-    2048: "#eeae24"
+    2048: "#eeae24",
 }
 FONT_COLOR = (0, 0, 0)
-FONT = pygame.font.SysFont('arial', 40)
+FONT = pygame.font.SysFont("arial", 40)
+
 
 # Functions
 def draw_tile(screen, value, x, y):
@@ -39,6 +40,7 @@ def draw_tile(screen, value, x, y):
         text_rect = text.get_rect(center=(x + Tile_size / 2, y + Tile_size / 2))
         screen.blit(text, text_rect)
 
+
 def draw_board(screen, board):
     screen.fill(Background_color)
     for row in range(Size):
@@ -48,11 +50,13 @@ def draw_board(screen, board):
             y = Margine + Gap_size + row * (Tile_size + Gap_size)
             draw_tile(screen, value, x, y)
 
+
 def add_new_tile(board):
     empty_tiles = [(r, c) for r in range(Size) for c in range(Size) if board[r][c] == 0]
     if empty_tiles:
         row, col = random.choice(empty_tiles)
         board[row][col] = 2 if random.random() < 0.9 else 4
+
 
 def slide_row_left(row):
     new_row = [i for i in row if i != 0]
@@ -65,11 +69,13 @@ def slide_row_left(row):
     new_row += [0] * (Size - len(new_row))
     return new_row
 
+
 def move_left(board):
     new_board = []
     for row in board:
         new_board.append(slide_row_left(row))
     return new_board
+
 
 def move_right(board):
     new_board = []
@@ -77,21 +83,25 @@ def move_right(board):
         new_board.append(slide_row_left(row[::-1])[::-1])
     return new_board
 
+
 def move_up(board):
     new_board = list(zip(*board))
     new_board = move_left(new_board)
     return [list(row) for row in zip(*new_board)]
+
 
 def move_down(board):
     new_board = list(zip(*board))
     new_board = move_right(new_board)
     return [list(row) for row in zip(*new_board)]
 
+
 def check_win(board):
     for row in board:
         if 2048 in row:
             return True
     return False
+
 
 def check_moves_available(board):
     for row in range(Size):
@@ -105,6 +115,7 @@ def check_moves_available(board):
             if board[row][col] == board[row + 1][col]:
                 return True
     return False
+
 
 def main():
     screen = pygame.display.set_mode((Screen_width, Screen_height))
@@ -153,6 +164,6 @@ def main():
 
     pygame.quit()
 
+
 if __name__ == "__main__":
     main()
-
