@@ -22,6 +22,13 @@ repos:
         args: [--fix]
       - id: ruff-format
 
-  
-
-  
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest
+        entry: python -c "from pathlib import Path; import subprocess, sys; test_files = list(Path('tests').rglob('test_*.py')); sys.exit(0 if not test_files else subprocess.call([sys.executable, '-m', 'pytest', 'tests']))"
+        language: python
+        additional_dependencies:
+          - pytest
+        pass_filenames: false
+        stages: [pre-push]
