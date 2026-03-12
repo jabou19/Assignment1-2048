@@ -18,11 +18,11 @@ Update these steps to match your implementation.
 1. Open the project folder in VS Code.
 2. Make sure Python is installed.
 3. Install dependencies with `pip install -e .`.
-4. Run the main program from the `src` folder.
+4. Run the main program from the project root.
 
 Example:
 
-`python src/game.py`
+`python main.py`
 
 2048 project for the AI board game assignment.
 
@@ -58,7 +58,7 @@ pre-commit install --hook-type pre-push
 Start the game with:
 
 ```powershell
-python src/game.py
+python main.py
 ```
 
 ## Run Checks Locally
@@ -107,11 +107,18 @@ Assignment1/
 │   └── workflows/
 │       └── ci.yml
 ├── .pre-commit-config.yaml
+├── main.py
 ├── pyproject.toml
 ├── README.md
 ├── src/
-│   ├── AIplayer.py
-│   ├── benchmark.py
-│   └── game.py
+│   ├── game/
+│   │   └── game.py
+│   ├── ai/
+│   │   ├── expectimax.py
+│   │   ├── mcts.py
+│   │   └── heuristics.py
+│   ├── benchmark/
+│   │   └── runner.py
 └── tests/
+	└── test_game.py
 ```
