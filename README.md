@@ -24,29 +24,94 @@ Example:
 
 `python src/game.py`
 
-If you add tests later, you can run them with:
+2048 project for the AI board game assignment.
 
-`python -m pytest tests`
+## Requirements
+
+- Python 3.12 or newer
+- `pip`
+- Git, if you want to use the pre-commit hooks
+
+## Install
+
+Install the project dependencies:
+
+```powershell
+pip install -e .
+```
+
+Install the local quality-check tools:
+
+```powershell
+pip install pre-commit
+```
+
+Set up Git hooks:
+
+```powershell
+pre-commit install
+pre-commit install --hook-type pre-push
+```
+
+## Run The Game
+
+Start the game with:
+
+```powershell
+python src/game.py
+```
+
+## Run Checks Locally
+
+Run all commit-stage checks:
+
+```powershell
+pre-commit run --all-files
+```
+
+Run the push-stage checks manually:
+
+```powershell
+pre-commit run --hook-stage pre-push --all-files
+```
+
+## Check YAML Files
+
+To validate YAML files only, run:
+
+```powershell
+pre-commit run check-yaml --all-files
+```
+
+This checks files such as:
+
+- `.pre-commit-config.yaml`
+- `.github/workflows/ci.yml`
+
+## Tests
+
+If test files exist under `tests/`, run them with:
+
+```powershell
+python -m pytest tests
+```
+
+The local `pre-push` hook and the GitHub Actions workflow both run `pytest` only when `tests/test_*.py` files exist.
+
 
 ## Folder Structure
 
 ```text
 Assignment1/
+├── .github/
+│   └── workflows/
+│       └── ci.yml
+├── .pre-commit-config.yaml
+├── pyproject.toml
 ├── README.md
 ├── src/
-│   ├── ai/
-│   ├── benchmark/
-│   └── game/
+│   ├── AIplayer.py
+│   ├── benchmark.py
+│   └── game.py
 └── tests/
 ```
-
-### Folder Overview
-
-- `src/game/` – game logic, rules, and board representation
-- `src/ai/` – AI agents, search algorithms, and evaluation functions
-- `src/benchmark/` – benchmarking and performance measurement code
-- `tests/` – unit tests and integration tests
-
-## Notes
-
-Replace the placeholder text above with your final project details.

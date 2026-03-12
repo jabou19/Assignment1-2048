@@ -1,0 +1,33 @@
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-ast
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-added-large-files
+      - id: check-merge-conflict
+      - id: detect-private-key
+      - id: name-tests-test
+        args: [--pytest-test-first]
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.13
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest
+        entry: python -c "from pathlib import Path; import subprocess, sys; test_files = list(Path('tests').rglob('test_*.py')); sys.exit(0 if not test_files else subprocess.call([sys.executable, '-m', 'pytest', 'tests']))"
+        language: python
+        additional_dependencies:
+          - pytest
+        pass_filenames: false
+        stages: [pre-push]
