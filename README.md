@@ -46,6 +46,12 @@ Install the local quality-check tools:
 pip install pre-commit
 ```
 
+Install mypy (type checker):
+
+```powershell
+pip install mypy
+```
+
 Set up Git hooks:
 
 ```powershell
@@ -61,7 +67,7 @@ Start the game with:
 python main.py
 ```
 
-## Run Checks Locally
+## Run Checks Locally (.ruff_cache)
 
 Run all commit-stage checks:
 
@@ -73,6 +79,20 @@ Run the push-stage checks manually:
 
 ```powershell
 pre-commit run --hook-stage pre-push --all-files
+```
+
+## Type Check (.mypy_cache)
+
+Type-check a single file:
+
+```powershell
+mypy main.py
+```
+
+Type-check the whole project:
+
+```powershell
+mypy .
 ```
 
 ## Check YAML Files
@@ -88,7 +108,7 @@ This checks files such as:
 - `.pre-commit-config.yaml`
 - `.github/workflows/ci.yml`
 
-## Tests
+## Tests (.pytest_cache)
 
 If test files exist under `tests/`, run them with:
 

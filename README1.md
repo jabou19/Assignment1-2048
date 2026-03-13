@@ -31,7 +31,7 @@ So already at the start, your group can prepare:
 - a report outline
 - a work distribution document
 
-**Important constraint:**  
+**Important constraint:**
 The **AI must be clearly separated from the game engine**.
 
 ---
@@ -56,7 +56,7 @@ Also reflect on:
 3. Can any of the human reasoning and intuition used to play the game be implemented in the AI algorithm?
 4. How would you represent game states on the computer?
 
-**Game simplification option:**  
+**Game simplification option:**
 If necessary to ensure a functional AI, the game can be simplified by reducing the board size, limiting the number of pieces, or omitting certain rules while preserving the core mechanics.
 
 ---
@@ -75,7 +75,7 @@ Prepare the README early, for example with:
 ## 5) Choose the game and its rules (report-focused, for 2048)
 **2048 (game rule)**
 
-2048 is a single-player sliding tile puzzle video game written by Italian web developer Gabriele Cirulli and published on GitHub.[2] The objective of the game is to slide numbered tiles on a grid to combine them to create a tile with the number 2048; however, one can continue to play the game after reaching the goal, creating tiles with larger numbers. 
+2048 is a single-player sliding tile puzzle video game written by Italian web developer Gabriele Cirulli and published on GitHub.[2] The objective of the game is to slide numbered tiles on a grid to combine them to create a tile with the number 2048; however, one can continue to play the game after reaching the goal, creating tiles with larger numbers.
 2048 was intended to be an improved version of two other games, both of which were clones of the iOS game Threes released a month earlier. Cirulli himself described 2048 as being "conceptually similar" to Threes.[3] The release of 2048 resulted in the rapid appearance of many similar games, akin to the flood of Flappy Bird variations from 2013. The game received generally positive reviews from critics, with it being described as "viral" and "addictive".
 
 **Gameplay (rules)**
@@ -112,17 +112,39 @@ Avoid RIGHT -> because it can pull large tiles away from the corner.
 ```
 
 
-**2048 is explicitly allowed.** It is:
+**Game Type Classification (2048)**
 
 - Single-player
-- Fully observable
-- Turn-based
+- Non-competitive and non-cooperative (no opponent team dynamics)
+- Non-zero-sum (there is no opposing utility to minimize)
+- Turn-based (one action per step: up/down/left/right)
+- Perfect information and fully observable (entire board is visible)
+- Not deterministic overall
 - Stochastic
-- Sequential decision problem
-- Not adversarial
-- Not zero-sum
 
-Keep this section short in the report.
+**Clarification on determinism**
+
+- The move and merge mechanics themselves are deterministic.
+- However, after each valid move, a new tile appears randomly:
+  - Value: 2 (90%) or 4 (10%)
+  - Position: random empty cell
+- Because of this random spawn step, the overall game is stochastic, not deterministic.
+
+**What this implies for AI methods**
+
+- Classical adversarial search like minimax is not the right fit, because there is no opponent.
+- Expectimax is a strong fit, because it models:
+  - Max nodes for player actions
+  - Chance nodes for random tile spawns
+- MCTS is also a strong fit, especially when deeper lookahead is expensive; it handles stochastic transitions through sampling.
+- Dynamic programming style MDP methods are theoretically relevant, but exact solutions are impractical due to huge state space.
+- In practice, the strongest assignment-friendly approaches are:
+  - Expectimax plus heuristic evaluation
+  - MCTS plus rollout policy and heuristic guidance
+
+**One-line summary**
+
+2048 is a single-agent, fully observable, turn-based stochastic decision problem, which points to expectimax, MCTS, and heuristic search rather than adversarial game-tree methods.
 
 ### Game Rules
 
@@ -137,20 +159,30 @@ Keep this section short in the report.
 
 **Transition**
 - Deterministic slide + merge
+- Tiles slide as far as possible in the chosen direction until blocked by edge or another tile
 - Random tile spawn:
   - 2 with probability 0.9
   - 4 with probability 0.1
   - Random empty cell
+- New tile is spawned only when a move actually changes the board (valid move)
 
 **Merge Rule**
 - Same-value tiles merge **once per move**
 - Score increases by merged value
+- Three consecutive same tiles: the two farthest along the movement direction merge first
+  - Example (LEFT): `[2, 2, 2, 0] -> [4, 2, 0, 0]`
+- Four same tiles in a row merge as pairs
+  - Example (LEFT): `[2, 2, 2, 2] -> [4, 4, 0, 0]`
 
 **Terminal Condition**
 - No legal moves available
 
 **Objective**
-- Reach 2048 tile (can continue afterward)
+- Reach 2048 tile (player can continue afterward)
+
+**UI Rules (Current Implementation)**
+- Score is displayed on screen
+- Move counter is displayed on screen
 
 ---
 
@@ -170,9 +202,9 @@ Using Lecture 5 formalization:
 - **Players:** single player
 - **Actions(s):** {Up, Down, Left, Right} where legal
 - **Result(s, a):** two-stage transition:
-  1) deterministic slide/merge  
-  2) probabilistic tile spawn  
-  Formally: `Result(s, a) → set of states with probabilities`  
+  1) deterministic slide/merge
+  2) probabilistic tile spawn
+  Formally: stochastic transition distribution `P(s' | s, a)` (equivalently, a set of possible `s'` with probabilities)
   This matches stochastic modeling from Lecture 4 (slides04)
 - **Terminal-Test(s):** True if:
   - no empty cells, and
@@ -200,22 +232,22 @@ At this stage, the goal is not to choose the final method yet, but to understand
 | Adversarial | No |
 | Zero-sum | No |
 
-**Important implication:**  
+**Important implication:**
 Because the environment introduces randomness, we must model **chance nodes**.
 
 ---
 
 ## 7.2) Suitable AI Methods (from lectures)
 
-❌ **Minimax**  
+❌ **Minimax**
 Not suitable: no adversary.
 
-✔ **Expectimax**  
+✔ **Expectimax**
 Appropriate for stochastic environments. Models:
 - Player nodes (max)
 - Chance nodes (expected value)
 
-✔ **Monte-Carlo Tree Search (MCTS)**  
+✔ **Monte-Carlo Tree Search (MCTS)**
 Lecture 6 explicitly discusses 2048 in MCTS context. MCTS characteristics:
 - sample-based
 - random playout evaluation
@@ -257,7 +289,7 @@ Even conservative estimate gives:
 - between 10¹³ – 10²⁰+
 
 Conclusion:
-- full search to terminal depth is impossible  
+- full search to terminal depth is impossible
 - this justifies heuristic search or sampling
 
 ---
@@ -315,14 +347,14 @@ Do not start with the AI. First implement:
 - terminal detection
 - win detection (2048 reached, if included separately)
 
-This is the core of the system.  
+This is the core of the system.
 The game engine must work correctly before any AI is added.
 
 ---
 
 ## 11) Make the game playable by a human
 
-First milestone:  
+First milestone:
 A human can play 2048 correctly on the computer.
 
 This proves that:
@@ -348,7 +380,7 @@ Before implementing AI, define the API the AI will use, for example:
 - get score
 - get highest tile
 
-It is better if the AI does not directly modify the live game object.  
+It is better if the AI does not directly modify the live game object.
 Instead, it should work on copied / simulated states during search.
 
 ---
